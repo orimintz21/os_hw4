@@ -4,7 +4,7 @@ void *smalloc(size_t size);
 
 void *smalloc(size_t size)
 {
-    if (size == 0 || size > 1024 * 1024 * 1024)
+    if (size == 0 || size > 1000000000)
     {
         return NULL;
     }
