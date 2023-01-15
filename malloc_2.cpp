@@ -20,6 +20,7 @@ struct MallocMetadata
     bool is_free;
     MallocMetadata *next;
     MallocMetadata *prev;
+    MallocMetadata() : size(0), is_free(false), next(NULL), prev(NULL) {}
 };
 
 class MallocList
