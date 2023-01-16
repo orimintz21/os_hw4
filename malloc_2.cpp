@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <cstring>
+#define MAX_SIZE 100000000
 using std::memmove;
 
 void *smalloc(size_t size);
@@ -113,16 +114,11 @@ void MallocList::addLast(MallocMetadata *node)
 
 MallocMetadata *MallocList::findData(void *data)
 {
-    MallocMetadata *curr = _head;
-    while (curr != NULL)
+    if (data == NULL)
     {
-        if ((void *)(curr + 1) == data)
-        {
-            return curr;
-        }
-        curr = curr->next;
+        return NULL;
     }
-    return NULL;
+    return (MallocMetadata *)((char *)data - _size_meta_data());
 }
 
 MallocMetadata *MallocList::findFree(size_t size)
@@ -141,7 +137,7 @@ MallocMetadata *MallocList::findFree(size_t size)
 
 void *MallocList::mallocData(const size_t size)
 {
-    if (size == 0 || size > 1000000000)
+    if (size == 0 || size > MAX_SIZE)
     {
         return NULL;
     }
@@ -196,7 +192,7 @@ void MallocList::freeData(void *data)
 
 void *MallocList::reallocData(void *data, const size_t size)
 {
-    if (size == 0 || size > 100000000)
+    if (size == 0 || size > MAX_SIZE)
     {
         return NULL;
     }

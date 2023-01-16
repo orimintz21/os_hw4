@@ -1,10 +1,11 @@
 #include <unistd.h>
+#define MAX_SIZE 100000000
 
 void *smalloc(size_t size);
 
 void *smalloc(size_t size)
 {
-    if (size == 0 || size > 1000000000)
+    if (size == 0 || size > MAX_SIZE)
     {
         return NULL;
     }
