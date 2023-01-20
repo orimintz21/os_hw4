@@ -27,7 +27,9 @@ struct MallocMetadata
 class MallocList
 {
 private:
-    MallocList() : _head(NULL), _tail(NULL) {}
+    MallocList() : _head(nullptr), _tail(nullptr), _list_num_free_blocks(0), _list_num_free_bytes(0),
+                   _list_num_allocated_blocks(0), _list_num_allocated_bytes(0),
+                   _list_num_meta_data_bytes(0) {}
     static MallocList &_instance;
     MallocMetadata *_head;
     MallocMetadata *_tail;
@@ -62,6 +64,7 @@ public:
     void freeData(void *data);
     void *reallocData(void *data, const size_t size);
 };
+MallocList &MallocList::_instance = MallocList::getInstance();
 
 size_t _num_free_blocks()
 {
@@ -185,8 +188,6 @@ void MallocList::freeData(void *data)
         curr->is_free = true;
         _list_num_free_blocks++;
         _list_num_free_bytes += curr->size;
-        _list_num_allocated_blocks--;
-        _list_num_allocated_bytes -= curr->size;
     }
 }
 
@@ -227,10 +228,14 @@ void *scalloc(const size_t num, size_t size)
 
 void sfree(void *p)
 {
+    if (p == nullptr)
+        return;
     MallocList::getInstance().freeData(p);
 }
 
 void *srealloc(void *oldp, size_t size)
 {
+    if (oldp == nullptr)
+        return smalloc(size);
     return MallocList::getInstance().reallocData(oldp, size);
 }
