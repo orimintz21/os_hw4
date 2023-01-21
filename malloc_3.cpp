@@ -182,6 +182,7 @@ MallocMetadata *MallocList::findFree(size_t size)
     MallocMetadata *curr = _head;
     while (curr != nullptr)
     {
+        checkCookie(curr);
         if (curr->is_free && curr->size >= size)
         {
             return curr;
@@ -193,6 +194,8 @@ MallocMetadata *MallocList::findFree(size_t size)
 
 void MallocList::checkCookie(MallocMetadata *meta)
 {
+    if (meta == nullptr)
+        return;
     if (meta->_cookie != _cookie)
     {
         exit(0xdeadbeef);
@@ -244,6 +247,9 @@ void MallocList::removeFromList(MallocMetadata *meta)
 
 void MallocList::removeFromAddressList(MallocMetadata *meta)
 {
+    checkCookie(meta->prev_by_address);
+    checkCookie(meta->next_by_address);
+    checkCookie(meta);
     if (meta->prev_by_address == nullptr)
     {
         _head_by_address = meta->next_by_address;
@@ -264,12 +270,17 @@ void MallocList::removeFromAddressList(MallocMetadata *meta)
 
 void MallocList::removeFromSizeList(MallocMetadata *meta)
 {
+    checkCookie(meta->prev);
+    checkCookie(meta->next);
+    checkCookie(meta);
     if (meta->prev == nullptr)
     {
         _head = meta->next;
     }
     else
     {
+        checkCookie(meta->prev);
+        checkCookie(meta->next);
         meta->prev->next = meta->next;
     }
     if (meta->next == nullptr)
@@ -321,6 +332,7 @@ void MallocList::addToAddressList(MallocMetadata *meta)
         MallocMetadata *curr = _head_by_address;
         while (curr != nullptr)
         {
+            checkCookie(curr);
             if (curr > meta)
             {
                 if (curr->prev_by_address == nullptr)
@@ -356,6 +368,7 @@ void MallocList::addToSizeList(MallocMetadata *meta)
         MallocMetadata *curr = _head;
         while (curr != nullptr)
         {
+            checkCookie(curr);
             if (curr->size > meta->size || (curr->size == meta->size && curr > meta))
             {
                 if (curr->prev == nullptr)
