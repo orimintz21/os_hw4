@@ -211,7 +211,7 @@ void *MallocList::reallocData(void *data, const size_t size)
     {
         return NULL;
     }
-    memcpy(new_data, data, curr->size);
+    memmove(new_data, data, curr->size);
     freeData(data);
     return new_data;
 }
