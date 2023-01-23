@@ -230,10 +230,10 @@ MallocMetadata *MallocList::splitBlocks(MallocMetadata *meta, size_t size)
     meta->is_free = false;
     addToList(new_meta);
     addToList(meta);
-    if (nextIsFree(new_meta))
-    {
-        mergeWithNext(new_meta);
-    }
+    // if (nextIsFree(new_meta))
+    // {
+    //     mergeWithNext(new_meta);
+    // }
     return meta;
 }
 
